@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Core Trend Dashboard</title>
+    <style>
+        /* --- Design System: Soft Pink Background & Navy Typography --- */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+        }
+
+        body {
+            background-color: #FFF0F2; /* Soft Pastel Pink Background */
+            color: #1A2A4A; /* Sophisticated Navy Text */
+            min-height: 100vh;
+        }
+
+        /* --- Sophisticated Typography with Soft Shadows --- */
+        h1, h2, h3, h4 {
+            color: #1A2A4A; /* Navy Headers */
+            font-weight: 700;
+            text-shadow: 1px 1px 2px rgba(26, 42, 74, 0.15);
+            margin-bottom: 15px;
+        }
+
+        p, li {
+            color: #1A2A4A; /* Navy Body Text */
+            font-weight: 500;
+            line-height: 1.6;
+        }
+
+        /* --- Top Navigation Bar --- */
+        header {
+            background-color: #FFE1E6;
+            padding: 20px 40px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid #FFD0D8;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1A2A4A; /* Navy Logo */
+            cursor: pointer;
+        }
+
+        nav button {
+            background: none;
+            border: none;
+            color: #1A2A4A; /* Navy Navigation Links */
+            font-size: 16px;
+            font-weight: 600;
+            margin-left: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+
+        nav button:hover, nav button.active {
+            background-color: rgba(255, 255, 255, 0.6);
+            transform: translateY(-2px);
+        }
+
+        /* --- Page Layout Containers --- */
+        .container {
+            max-width: 1100px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .page {
+            display: none; /* Controlled via JS */
+        }
+
+        .page.active-page {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Sleek Glassmorphism Module Boxes --- */
+        .module-box {
+            padding: 30px;
+            border-radius: 15px;
+            background-color: rgba(255, 255, 255, 0.35);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            margin-bottom: 30px;
+            backdrop-filter: blur(5px);
+            -webkit-backdrop-filter: blur(5px);
+        }
+
+        /* --- Image Placeholders (Strict 872x504 & Centered) --- */
+        .image-placeholder {
+            width: 872px !important;
+            height: 504px !important;
+            max-height: none !important;
+            object-fit: cover;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(26, 42, 74, 0.2);
+            background-color: rgba(255, 255, 255, 0.2);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* --- Interactive Accordion Custom Buttons --- */
+        .accordion-section {
+            margin-top: 25px;
+        }
+
+        .accordion-btn {
+            width: 100%;
+            background-color: rgba(255, 255, 255, 0.85);
+            color: #1A2A4A; /* Navy Accordion Title */
+            text-align: left;
+            padding: 15px 20px;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 10px;
+            transition: background-color 0.3s ease;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .accordion-btn:hover {
+            background-color: #FFFFFF;
+        }
+
+        .accordion-content {
+            display: none;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.2);
+            border-left: 4px solid #1A2A4A; /* Navy Left Border */
+            border-radius: 0 0 8px 8px;
+            margin-top: -10px;
+            margin-bottom: 15px;
+        }
+
+        .sub-bullet-list {
+            list-style-type: none;
+            padding-left: 5px;
+        }
+
+        .sub-bullet-item {
+            margin-bottom: 20px;
+            padding: 15px;
+            background-color: rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+        }
+
+        .sub-bullet-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #1A2A4A;
+        }
+
+        /* --- Sub-items Inner Images (Strict 872x504 & Centered) --- */
+        .small-img {
+            width: 872px !important;
+            height: 504px !important;
+            max-height: none !important;
+            margin-top: 10px;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="showPage('home')">✨ Core Trend Dashboard</div>
+        <nav>
+            <button id="btn-gorpcore" onclick="showPage('gorpcore')">Gorpcore</button>
+            <button id="btn-balletcore" onclick="showPage('balletcore')">Balletcore</button>
+            <button id="btn-geekchic" onclick="showPage('geekchic')">GeekChic</button>
+            <button id="btn-barbiecore" onclick="showPage('barbiecore')">Barbiecore</button>
+            <button id="btn-cowboycore" onclick="showPage('cowboycore')">Cowboycore</button>
+            <button id="btn-royalcore" onclick="showPage('royalcore')">Royalcore</button>
+        </nav>
+    </header>
+
+    <div class="container">
+
+        <div id="page-home" class="page active-page">
+            <div class="module-box" style="text-align: center; padding: 50px 30px;">
+                <h1 style="font-size: 56px; margin-bottom: 20px;">Core Trend</h1>
+                <p style="font-size: 22px; font-weight: 600; max-width: 800px; margin: 0 auto 30px auto;">
+                    The "Core" trend (or “-core” aesthetic) refers to hyper-specific subcultures or micro-trends on TikTok and Instagram that define a distinct visual vibe or lifestyle.
+                </p>
+            </div>
+            
+            <div class="module-box">
+                <h2>Social Media Aesthetics (The "-core" Trend)</h2>
+                <p style="margin-bottom: 20px;">
+                    Originating largely on platforms like TikTok and Tumblr, the suffix "-core" is slapped onto any word to describe a specific vibe, aesthetic, or visual identity.
+                </p>
+                <p style="margin-bottom: 20px;">
+                    <strong>How it's used:</strong> It creates hyper-specific internet subcultures. For example, "lovecore" features hearts and pink motifs, while "royalcore" pulls inspiration from historical European monarchies.
+                </p>
+                <p>
+                    <strong>The "Corecore" trend:</strong> This is an artistic, somewhat surreal editing style on TikTok that mashes together unrelated audio and video clips to evoke heavy, emotional, or nostalgic feelings about modern life.
+                </p>
+            </div>
+        </div>
+
+        <div id="page-gorpcore" class="page">
+            <div class="module-box">
+                <img src="gorpcore1.png" alt="Gorpcore Main Image" class="image-placeholder">
+                <h1>Gorpcore</h1>
+                <p style="font-size: 18px;">
+                    Gorpcore is a fashion aesthetic that takes high-performance outdoor, hiking, and camping gear and styles it for everyday streetwear. The name comes from "gorp," slang for trail mix (Good Ol' Raisins and Peanuts), mixed with "normcore". It celebrates utilitarian, weather-resistant clothing designed to be practical, comfortable, and versatile in urban environments.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why People Love It</h2>
+                <ul style="padding-left: 20px; gap: 10px; display: flex; flex-direction: column;">
+                    <li><strong>Climate Readiness:</strong> Frequent freak weather has made water-resistant and windproof gear everyday city wear.</li>
+                    <li><strong>Comfort and Utility:</strong> Rejecting constricting clothing, Gen Z gravitates toward brands that allow easy movement and possess practical elements.</li>
+                    <li><strong>Eco-Consciousness:</strong> Many gorpcore labels utilize recycled materials and offer repair programs, which heavily appeal to environmentally aware youth.</li>
+                </ul>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('gorp-brands')">Top Gen Z Brands <span>▼</span></button>
+            <div id="gorp-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Arc'teryx</div>
+                        <img src="gorpcore2.png" alt="Arc'teryx" class="image-placeholder small-img">
+                        <p>The brand's XT-6 trail running shoe became an instant, global streetwear icon.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Salomon</div>
+                        <img src="gorpcore3.png" alt="Salomon" class="image-placeholder small-img">
+                        <p>Known for minimalist tech.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">The North Face & Patagonia</div>
+                        <img src="gorpcore4.png" alt="TNF Patagonia" class="image-placeholder small-img">
+                        <p>Historic outdoor staples that have been heavily absorbed into youth closets.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Uniqlo</div>
+                        <img src="gorpcore5.png" alt="Uniqlo" class="image-placeholder small-img">
+                        <p>Provides highly accessible, budget-friendly entry points for gorpcore vests and fleeces.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('gorp-elements')">Key Elements of Gorpcore <span>▼</span></button>
+            <div id="gorp-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Hardshell & Rain Jackets</div>
+                        <img src="gorpcore6.png" alt="Hardshell" class="image-placeholder small-img">
+                        <p>Waterproof, breathable shells from technical specialists like Arc'teryx or durable classics like The North Face</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Fleece Pullovers & Cardigans</div>
+                        <img src="gorpcore7.png" alt="Fleece" class="image-placeholder small-img">
+                        <p>Cozy layering pieces. Brands like Patagonia are the gold standard for retro and modern fleeces.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Utility & Cargo Pants</div>
+                        <img src="gorpcore8.png" alt="Cargo" class="image-placeholder small-img">
+                        <p>Wide-leg, durable bottoms equipped with multiple pockets. Labels like Gramicci offer iconic climbing pants with built-in webbed belts.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Trail Shoes & Hiking Boots</div>
+                        <img src="gorpcore9.png" alt="Shoes" class="image-placeholder small-img">
+                        <p>Chunky, rugged footwear designed for the trail but styled in the city. Look for Salomon for aesthetic trail runners or HOKA for highly cushioned options.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Accessories</div>
+                        <img src="gorpcore10.png" alt="Accessories" class="image-placeholder small-img">
+                        <p>Ripstop crossbody slings, rugged bucket hats, and thick, chunky knit beanies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-balletcore" class="page">
+            <div class="module-box">
+                <img src="balletcore1.png" alt="Balletcore Main Image" class="image-placeholder">
+                <h1>Balletcore</h1>
+                <p style="font-size: 18px;">
+                    Balletcore is a viral fashion aesthetic and lifestyle trend that draws inspiration from the delicate, graceful world of classical ballet. It blends the functional beauty of dancewear—like leotards, wrap tops, and tulle skirts—with everyday elevated athleisure and streetwear.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why It’s Trending</h2>
+                <p>The trend gained massive traction on social media (such as TikTok and Instagram) as a natural evolution of comfort-focused athleisure. It offers a way to look effortlessly polished, romantic, and hyper-feminine while remaining comfortable enough for daily wear.</p>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('ballet-brands')">Top Gen Z Brands <span>▼</span></button>
+            <div id="ballet-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Miu Miu</div>
+                        <img src="balletcore2.png" alt="Miu Miu" class="image-placeholder small-img">
+                        <p>Renowned for bringing ballet flats, wrap skirts, and delicate knitwear to the luxury high-fashion runway.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Bloch</div>
+                        <img src="balletcore3.png" alt="Bloch" class="image-placeholder small-img">
+                        <p>An authentic dancewear authority that offers an everyday Ballet Core Collection of wrap tops and soft knitwear.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Shushu Tong</div>
+                        <img src="balletcore4.png" alt="Shushu Tong" class="image-placeholder small-img">
+                        <p>A designer brand specializing in romantic, structured tulle, and feminine silhouettes.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Repetto</div>
+                        <img src="balletcore5.png" alt="Repetto" class="image-placeholder small-img">
+                        <p>Founded in Paris in 1947, they are the gold standard for authentic ballet footwear and apparel.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('ballet-elements')">Key Elements of Balletcore <span>▼</span></button>
+            <div id="ballet-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Color Palette</div><img src="balletcore6.png" class="image-placeholder small-img"><p>Dominated by soft, romantic hues like pale pinks, creams, whites, nudes, and soft grays. Hints of black or wine tones are often added for contrast.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Fabrics & Textures</div><img src="balletcore7.png" class="image-placeholder small-img"><p>Flowing, ethereal materials like tulle, chiffon, and sheer fabrics mixed with sleek satin, breathable jersey, and cozy knits.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Fitted Basics</div><img src="balletcore8.png" class="image-placeholder small-img"><p>Bodysuits and camisoles that act as base layers, emulating traditional leotards.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Layering</div><img src="balletcore9.png" class="image-placeholder small-img"><p>Wrap tops, shrugs, and oversized cardigans worn over fitted tanks to accentuate the waist.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Footwear</div><img src="balletcore10.png" class="image-placeholder small-img"><p>Delicate ballet flats (often with satin finishes or ankle ribbons), Mary Janes, or pointe shoes.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Accessories</div><img src="balletcore11.png" class="image-placeholder small-img"><p>Leg warmers, knit shrugs, hair ribbons, and bows.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Hair & Makeup</div><img src="balletcore12.png" class="image-placeholder small-img"><p>Sleek, slicked-back buns, soft rosy makeup, and dewy complexions.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-geekchic" class="page">
+            <div class="module-box">
+                <img src="geek1.png" alt="GeekChic Main Image" class="image-placeholder">
+                <h1>GeekChic</h1>
+                <p style="font-size: 18px;">
+                    Geek chic is a fashion and lifestyle trend that recontextualizes traditionally "nerdy" or "uncool" clothing into trendy, stylish outfits. It celebrates a scholastic, intellectual, or pop-culture aesthetic—blending vintage scholastic vibes with subtle nods to gaming, or comic fandoms.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why It Matters</h2>
+                <p>Geek chic represents a cultural shift. It moved geeky and scholastic subcultures from being viewed as socially awkward to being celebrated as confident, intellectual, and highly fashionable.</p>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('geek-brands')">Top Gen Z Brands (Runway "Librarian-Core”) <span>▼</span></button>
+            <div id="geek-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Thom Browne</div>
+                        <img src="geek2.png" class="image-placeholder small-img">
+                        <p>Known for heavily preppy, academically inclined silhouettes, pleated skirts, and tailored blazers that capture a fantastical school uniform aesthetic.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">LEWKIN</div>
+                        <img src="geek3.png" class="image-placeholder small-img">
+                        <p>A rapidly popular K-fashion brand offering distinctively smart, "luxe-librarian" styled clothing like vests, pleated skirts, and oversized glasses.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Warby Parker</div>
+                        <img src="geek4.png" class="image-placeholder small-img">
+                        <p>The go-to destination for stylish, intellectual, and vintage-inspired frames that anchor any geek-chic outfit.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('geek-elements')">Key Elements of Geek Chic <span>▼</span></button>
+            <div id="geek-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Statement Eyewear</div><img src="geek5.png" class="image-placeholder small-img"><p>The ultimate staple. Oversized, thick black horn-rimmed frames, tortoiseshell patterns, or wire-rimmed glasses are central.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Vintage Layering</div><img src="geek6.png" class="image-placeholder small-img"><p>Pieces reminiscent of a cozy, scholarly wardrobe. Think cable-knit sweaters, sweater vests, argyle prints, and oversized, worn-in cardigans.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Preppy Academia</div><img src="geek7.png" class="image-placeholder small-img"><p>Tailored, scholastic silhouettes such as high-waisted trousers, pleated plaid skirts, button-down shirts, and blazers.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Quirky Footwear</div><img src="geek8.png" class="image-placeholder small-img"><p>Practical, sturdy shoes are essential. Oxfords, loafers, and classic worn-in canvas sneakers complete the look.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Subtle References</div><img src="geek9.png" class="image-placeholder small-img"><p>Unlike full cosplay, geek chic integrates subtle nods to pop culture—like a vintage graphic tee, a subtle sci-fi print, or retro pixel patterns—into an otherwise everyday, curated wardrobe.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Smart Accessories</div><img src="geek10.png" class="image-placeholder small-img"><p>Practical, bookish additions like structured leather satchels, messenger bags, or even an occasional bow tie or pair of suspenders.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-barbiecore" class="page">
+            <div class="module-box">
+                <img src="barbiecore1.png" alt="Barbiecore Main Image" class="image-placeholder">
+                <h1>Barbiecore</h1>
+                <p style="font-size: 18px;">
+                    Barbiecore is a hyper-feminine aesthetic and fashion trend that pays homage to the iconic Mattel doll. Driven by nostalgic energy, it features bold, monochromatic hot pink hues, playful textures, glittery accessories, and a distinctly unapologetic approach to maximalist glamour.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why It’s Trending</h2>
+                <p>Barbiecore is trending because it perfectly combines early 2000s nostalgia, dopamine dressing, and a modern celebration of hyper-femininity. The movement blends bright pink aesthetics, playful fashion, and self-expression into a cultural phenomenon.</p>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('barbie-brands')">Barbiecore Brands (Including Beauty and Cosmetics) <span>▼</span></button>
+            <div id="barbie-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">NYX Professional Makeup</div>
+                        <img src="barbiecore2.png" class="image-placeholder small-img">
+                        <p>Offers highly sought-after, limited-edition eyeshadow palettes, jumbo pencils, and flip-phone mirrors.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">OPI</div>
+                        <img src="barbiecore3.png" class="image-placeholder small-img">
+                        <p>Released a signature lacquer collection featuring a variety of bold pinks, blues, and glitter shades.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Aldo</div>
+                        <img src="barbiecore4.png" class="image-placeholder small-img">
+                        <p>Known for their accessible footwear and handbag capsule collections directly inspired by the Barbie universe.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('barbie-elements')">Key Elements of Barbiecore <span>▼</span></button>
+            <div id="barbie-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Signature Color Palette</div><img src="barbiecore5.png" class="image-placeholder small-img"><p>Supporting Shades: Complemented by bubblegum pink, pastel hues, lavender, and bold pops of neon.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Hyper-Feminine Fashion</div><img src="barbiecore6.png" class="image-placeholder small-img"><p>Y2K & Retro Elements: Early-2000s McBling influences, such as velour tracksuits, butterfly clips, and platform shoes.<br>Iconic Silhouettes: Bodycon dresses, micro-miniskirts, crop tops, and dramatic, voluminous skirts that mimic a doll's proportions.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Bold Beauty & Styling</div><img src="barbiecore7.png" class="image-placeholder small-img"><p>Flawless Makeup: Glowing skin with vibrant eyeshadows, colorful cat-eye liner, and glossy, bright lipstick.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Maximalist Decor & Design</div><img src="barbiecore8.png" class="image-placeholder small-img"><p>Dreamhouse Vibe: Bright pink walls, velvet seating, and retro-inspired appliances.<br>Glamorous Details: Fluffy throw pillows, vanity mirrors, see-through vases, and gold or metallic accents for a touch of Art Deco luxury.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-cowboycore" class="page">
+            <div class="module-box">
+                <img src="cowboycore1.png" alt="Cowboycore Main Image" class="image-placeholder">
+                <h1>Cowboycore</h1>
+                <p style="font-size: 18px;">
+                    A dominant fashion and lifestyle aesthetic that elevates traditional Western wear—like cowboy boots, Stetson hats, fringe jackets, and bolo ties—with modern, everyday styling.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why It’s Trending</h2>
+                <p>Cowboycore is trending because of high-profile pop culture endorsements, a desire for authenticity, and its versatility.</p>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('cowboy-brands')">Cowboycore Brands (Boots & Denim) <span>▼</span></button>
+            <div id="cowboy-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Tecovas</div>
+                        <img src="cowboycore2.png" class="image-placeholder small-img">
+                        <p>Known for modern, direct-to-consumer craftsmanship that eliminates luxury markups.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Ariat</div>
+                        <img src="cowboycore3.png" class="image-placeholder small-img">
+                        <p>Blends traditional Western silhouettes with athletic footwear technology for supreme everyday comfort.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Wrangler</div>
+                        <img src="cowboycore4.png" class="image-placeholder small-img">
+                        <p>The defining name in Western denim, famous for its durable "cowboy cut" jeans and snap shirts.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Lee</div>
+                        <img src="cowboycore5.png" class="image-placeholder small-img">
+                        <p>A heritage denim brand that frequently collaborates on trendy, accessible cowboycore capsules.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('cowboy-elements')">Key Elements of Cowboycore <span>▼</span></button>
+            <div id="cowboy-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Footwear</div><img src="cowboycore6.png" class="image-placeholder small-img"><p>Classic leather or suede cowboy boots are the ultimate staple. They range from neutral tones like tan and black to statement-making oxblood or detailed embroidery.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Headwear & Accessories</div><img src="cowboycore7.png" class="image-placeholder small-img"><p>Wide-brimmed cowboy hats made from natural materials, heavy metal-buckled belts, bolo ties, and bandanas are used to anchor the Western vibe.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Fabrics & Textures</div><img src="cowboycore8.png" class="image-placeholder small-img"><p>Heavy-duty denim (especially in double-denim "Canadian tuxedo" looks), rugged leather, distressed suede, and flowing textures like lace or fringed elements are prominent.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Silhouettes & Tailoring</div><img src="cowboycore9.png" class="image-placeholder small-img"><p>Vintage-style chore jackets, western button-down shirts with contrasting yokes, blousier blouses, and skirts—often featuring ruffles or fringe—provide a blend of structure and movement.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Earthy Color Palettes</div><img src="cowboycore10.png" class="image-placeholder small-img"><p>The aesthetic relies on colors found in the American West, including denim blues, dusty rust, warm ochre, sage green, deep browns, and sunset reds.</p></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="page-royalcore" class="page">
+            <div class="module-box">
+                <img src="royalcore1.png" alt="Royalcore Main Image" class="image-placeholder">
+                <h1>Royalcore</h1>
+                <p style="font-size: 18px;">
+                    Royalcore is an internet aesthetic that romanticizes the opulence, elegance, and lifestyle of historical European royalty. Driven by social media and period dramas like Bridgerton, it emphasizes escapism, grandeur, and classic romance.
+                </p>
+            </div>
+
+            <div class="module-box">
+                <h2>Why It’s Trending</h2>
+                <p>Royalcore is trending because it offers a highly romanticized form of escapism, heavily boosted by historical fiction on TV and social media. It allows people to participate in flamboyant, hyper-feminine fashion and maximalist interior design, embodying an elegant, majestic lifestyle.</p>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('royal-brands')">Royalcore Brands <span>▼</span></button>
+            <div id="royal-brands" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Selkie</div>
+                        <img src="royalcore2.png" class="image-placeholder small-img">
+                        <p>Famous for their signature pastel puff dresses and playful printed organza designs.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Teuta Matoshi</div>
+                        <img src="royalcore3.png" class="image-placeholder small-img">
+                        <p>Renowned for exquisite, custom-tailored formal gowns, floral bodices, and elaborate tulle skirts.</p>
+                    </div>
+                    <div class="sub-bullet-item">
+                        <div class="sub-bullet-title">Lirika Matoshi</div>
+                        <img src="royalcore4.png" class="image-placeholder small-img">
+                        <p>Known for romantic, heavily embellished, and whimsical designs that merge fantasy with modern royal aesthetics.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="accordion-btn" onclick="toggleAccordion('royal-elements')">Key Elements of Royalcore <span>▼</span></button>
+            <div id="royal-elements" class="accordion-content">
+                <div class="sub-bullet-list">
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Regal Fashion & Silhouettes</div><img src="royalcore5.png" class="image-placeholder small-img"><p>The fashion prioritizes extravagance over strict historical accuracy. Key Garments are corsets, ball gowns, A-line skirts, and puff-sleeved dresses.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Fabrics</div><img src="royalcore6.png" class="image-placeholder small-img"><p>Luxurious and heavy materials like velvet, silk, brocade, organza, and lace.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Accessories</div><img src="royalcore7.png" class="image-placeholder small-img"><p>Tiaras, long opera gloves, pearls, and ornate brooches.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Maximalist Décor & Interiors</div><img src="royalcore8.png" class="image-placeholder small-img"><p>Furniture: Four-poster beds, velvet or throne-style armchairs, and heavily carved, dark wood pieces.<br>Accents: Gilded (gold) picture frames, crystal chandeliers, ornate mirrors, and candelabras.</p></div>
+                    <div class="sub-bullet-item"><div class="sub-bullet-title">Art & Culture</div><img src="royalcore9.png" class="image-placeholder small-img"><p>Media Inspirations: Driven by shows like Bridgerton (Regencycore) and Reign, as well as Jane Austen novels.<br>Audio: Classical music, symphonies, or instrumental covers of modern pop songs.</p></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // Tab Page Switching Engine
+        function showPage(pageId) {
+            // Hide all pages
+            const pages = document.querySelectorAll('.page');
+            pages.forEach(page => page.classList.remove('active-page'));
+
+            // Show target page
+            const targetPage = document.getElementById('page-' + pageId);
+            if (targetPage) {
+                targetPage.classList.add('active-page');
+            }
+
+            // Update Active Status on Navigation Menu Buttons
+            const buttons = document.querySelectorAll('nav button');
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            const activeBtn = document.getElementById('btn-' + pageId);
+            if (activeBtn) {
+                activeBtn.classList.add('active');
+            }
+
+            // Scroll smoothly back to top when tab switches
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Accordion Toggle Engine
+        function toggleAccordion(id) {
+            const content = document.getElementById(id);
+            const btn = content.previousElementSibling;
+            const arrow = btn.querySelector('span');
+
+            if (content.style.display === "block") {
+                content.style.display = "none";
+                arrow.textContent = "▼";
+            } else {
+                content.style.display = "block";
+                arrow.textContent = "▲";
+            }
+        }
+    </script>
+</body>
+</html>
