@@ -103,15 +103,19 @@
             -webkit-backdrop-filter: blur(5px);
         }
 
-        /* --- Image Placeholders --- */
+        /* --- Image Placeholders (Strict 872x504 & Centered) --- */
         .image-placeholder {
-            width: 100%;
-            max-height: 400px;
+            width: 872px !important;
+            height: 504px !important;
+            max-height: none !important;
             object-fit: cover;
             border-radius: 10px;
             margin-bottom: 20px;
             border: 1px solid rgba(26, 42, 74, 0.2);
             background-color: rgba(255, 255, 255, 0.2);
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
 
         /* --- Interactive Accordion Custom Buttons --- */
@@ -172,10 +176,16 @@
             color: #1A2A4A;
         }
 
+        /* --- Sub-items Inner Images (Strict 872x504 & Centered) --- */
         .small-img {
-            max-height: 250px;
+            width: 872px !important;
+            height: 504px !important;
+            max-height: none !important;
             margin-top: 10px;
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            display: block;
+            margin-left: auto;
+            margin-right: auto;
         }
     </style>
 </head>
